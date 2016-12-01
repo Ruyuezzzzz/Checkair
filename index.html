@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+    <meta charset="utf-8">
+		<title>Air quality checking</title>
+		<!--responsive -->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="jquery.fullPage.css" >
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>   
+    <script type="text/javascript" src="jquery.fullPage.js"></script>
+		
+    </head>
+    <body>
+       <div id="fullpage">
+ 
+	
+    
+     <script>$(document).ready(function() {
+    $('#fullpage').fullpage();
+});</script>
+    <div class="backgroundcover"></div>
+
+    <section>
+   
+        
+        <div class="section">
+	<header>
+
+		<h1 id="websitename">Air quality matters</h1>
+      
+		
+   
+    <iframe id="beijingair1" width="660" height="415" src="https://www.youtube.com/embed/ai2kFyAM0yM" frameborder="0" allowfullscreen></iframe>
+
+   
+   </div>
+
+ 
+
+
+ 
+  <div class="section">
+    
+	<div class="slide">
+    <p id="introduction"> China issued its first "red alert" for its highest air-pollution warning level in Beijing on Dec 7 this year.<br>
+		 The heavy smog carries risks for everyone and poses serious health dangers to people who live there.<br>
+		 It is really important for us to know more and care about air quality and air pollution</p></div>
+      <div class="slide">
+	  <h1 id="PM">Checking PM2.5 in your city!</h1>
+	 <p id="PM25">The small particles are smaller than 2.5 micrometers are called PM2.5,<br>
+		 including dust, dirt, soot, smoke, and liquid droplets.
+		 PM2.5 are believed <br>to pose the greatest health risks.
+		 Because of their small size (approximately <br>1/30th the average width of a human hair),
+		 these particles can lodge <br>deeply into the lungs and lead to health problems.</p>
+	<!--search box-->
+   <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+	 <!--create the map-->
+	 <div id='map'></div>
+   <script>
+	 //code adapted from Google map API documentation
+		function initAutocomplete() {
+
+    var map = new google.maps.Map(document.getElementById('map'), { center: new google.maps.LatLng(51.505, -0.09), mapTypeId: google.maps.MapTypeId.ROADMAP, zoom: 11 }); var t = new Date().getTime(); var waqiMapOverlay = new google.maps.ImageMapType({ getTileUrl: function(coord, zoom) { return 'http://tiles.aqicn.org/tiles/usepa-pm25/' + zoom + "/" + coord.x + "/" + coord.y + ".png?token=b07bf2756f1d583e0e950e841c18ab80c73e2dbe"; }, name: "Air Quality", }); map.overlayMapTypes.insertAt(0,waqiMapOverlay);
+
+
+  // Create the search box and link it to the UI element.
+  var input = document.getElementById('pac-input');
+  var searchBox = new google.maps.places.SearchBox(input);
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+  // Bias the SearchBox results towards current map's viewport.
+  map.addListener('bounds_changed', function() {
+    searchBox.setBounds(map.getBounds());
+  });
+
+  var markers = [];
+  // [START region_getplaces]
+  // Listen for the event fired when the user selects a prediction and retrieve
+  searchBox.addListener('places_changed', function() {
+    var places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }
+
+// Clear out the old markers.
+    markers.forEach(function(marker) {
+      marker.setMap(null);
+    });
+    markers = [];
+
+// get the icon, name and location.
+    var bounds = new google.maps.LatLngBounds();
+    places.forEach(function(place) {
+      var icon = {
+        url: place.icon,
+        size: new google.maps.Size(71, 71),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34),
+        scaledSize: new google.maps.Size(25, 25)
+      };
+// Create markers
+      markers.push(new google.maps.Marker({
+        map: map,
+        icon: icon,
+        title: place.name,
+        position: place.geometry.location
+      }));
+
+  if (place.geometry.viewport) {
+      // Only geocodes have viewport.
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    });
+    map.fitBounds(bounds);
+  });
+
+}
+   </script>
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSPOQUbCZxhhe2qsem9DhblpJHHsP2mEM&libraries=places&callback=initAutocomplete"
+         async defer></script>
+       </div>
+           <div class="slide">
+
+   <h1 id="weatherandaqi">Checking weather and air quality index</h1>
+	 <p id="aqi">An air quality index (AQI) is a number used by government agencies <br>to communicate to the public how polluted the air currently
+					 is or how <br>polluted it is forecast to become. As the AQI increases, an increasingly<br> large percentage of the population is likely
+					 to experience increasingly <br>severe adverse health effects.</p>
+	 <form id="search" action="#" method="post">
+				<div id="input"><input type="text" name="search-terms" id="searchterm" placeholder="Enter search city..."></div>
+				<button id="search_button">search</button>
+	</form>
+
+				 <div id="results">
+				 <p id="results1">
+				 </p>
+				 <p id="results2">
+				 </p>
+				 <p id="results3">
+				 </p>
+				 <p id="results4">
+				 </p>
+				 <img id="icon">
+			 </div>
+				 <script>
+//combine weather and AQI APIS
+				 $(document).ready(function() {
+
+												var key1 ="89b2fb66b2b948b0bfcbead344acc251";
+												var key2="c8475b7a5469ac700275bb679923ca81";
+
+												$("#search").submit(function(event) {
+														event.preventDefault();
+														do_search1();
+														do_search2();
+
+												});
+
+												var do_search1 = function(){
+
+														var search_term = $('#searchterm').val();
+
+													 $.ajax({
+																url: "https://api.breezometer.com/baqi/?",
+																data: { location: search_term,
+																				key: key1, },
+																success: function(response){
+																		console.log(response);
+
+																		$('#results1').text("Air Quality Index:"+' '+response.breezometer_aqi+' '+response.breezometer_description);
+
+																	}
+
+
+														});
+													}
+														var do_search2 = function(){
+
+																var search_term = $('#searchterm').val();
+
+															 $.ajax({
+																		url: "http://api.openweathermap.org/data/2.5/weather?units=metric",
+																		data: { q: search_term,
+
+																						appid: key2,
+																					 },
+
+																		success: function(response){
+																				console.log(response);
+
+														 $('#results2').text("Temperature now:"+' '+response.main.temp+"°C")
+														 $('#results3').text("Max Temperature ~ Min Temperature:"+" "+response.main.temp_max+"°C"+" "+"~"+" "+response.main.temp_min+"°C")
+														 $('#results4').text("Weather:"+' '+response.weather[0].main)
+														 $("#icon").attr("src","http://openweathermap.org/img/w/"+response.weather[0].icon+".png")
+																			}
+
+
+																				 });
+
+												}
+
+										});
+		</script>
+  </div>
+  <div class="slide">
+		<!--AQI index-->
+				<img id="indextable" src="img/Screenshot 2016-01-05 22.29.04.png">
+      </div>
+  <!--news part-->
+  <div class="slide">
+		<h2 id="airnew">Air pollution news</h2>
+		<form id="date">
+            <label for="from-date"> From Date:
+            <input type="date" id="from-date">
+            </label><br>
+            <input type="button" id="search-button" value="Search">
+    </form>
+    <div id="airnews">
+        <ul>
+        </ul>
+
+		</div>
+<script>
+$('#search-button').on("click", function(){
+            console.log("button clicked");
+
+            var from_date = $('#from-date').val();
+            console.log(from_date);
+            if(from_date == "") {
+                    var d = new Date();
+                    console.log(d);
+                    from_date = "" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+                    console.log(from_date);
+                }
+                do_search(from_date);
+                $('.error').hide();
+
+        });
+var key3="83339fb3-6d16-4ebf-972e-e68db378abf7";
+var print_headline = function(headline, url) {
+            $('#airnews ul').append('<li><a href="' + url + '" target="_blank">' + headline + '</a></li>');
+        }
+
+        var do_search = function(from_date) {
+            $('#airnews ul').empty();
+
+            $.ajax({
+                url: "http://content.guardianapis.com/search?q=air%20pollution%20pm2.5",
+                data: {
+                    "api-key": key3,
+
+                    "from-date": from_date
+                },
+                success: function(response) {
+                    console.log(response);
+                    var results = response.response.results;
+
+                    for(var i = 0; i < results.length; i++) {
+                        console.log(results[i].webTitle);
+                        print_headline(results[i].webTitle, results[i].webUrl);
+                    }
+
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr);
+                    console.log(status);
+                    console.log(error);
+                }
+            });
+        }
+	</script>
+</div>
+
+
+<footer>
+	<p> &copy; All Rights Reserved </p>
+
+</footer>
+
+</div>
+  <section>
+</body>
+
+</html>
