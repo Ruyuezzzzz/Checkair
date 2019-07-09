@@ -8,7 +8,7 @@
 		<link rel="stylesheet" href="css/reset.css">
 		<link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="jquery.fullPage.css" >
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>   
     <script type="text/javascript" src="jquery.fullPage.js"></script>
 		
     </head>
@@ -61,8 +61,9 @@
    <script>
 	 //code adapted from Google map API documentation
 		function initAutocomplete() {
+    var map = new google.maps.Map(document.getElementById('map'), { center: new google.maps.LatLng(51.505, -0.09), mapTypeId: google.maps.MapTypeId.ROADMAP, zoom: 11 }); var t = new Date().getTime(); var waqiMapOverlay = new google.maps.ImageMapType({ getTileUrl: function(coord, zoom) { return 'http://tiles.waqi.info/tiles/usepa-pm25/' + zoom + "/" + coord.x + "/" + coord.y + ".png?token=d42553890136ea2ed14b45b2732a7d8753253945"; }, name: "Air Quality", }); map.overlayMapTypes.insertAt(0,waqiMapOverlay);
 
-    var map = new google.maps.Map(document.getElementById('map'), { center: new google.maps.LatLng(51.505, -0.09), mapTypeId: google.maps.MapTypeId.ROADMAP, zoom: 11 }); var t = new Date().getTime(); var waqiMapOverlay = new google.maps.ImageMapType({ getTileUrl: function(coord, zoom) { return 'http://tiles.aqicn.org/tiles/usepa-pm25/' + zoom + "/" + coord.x + "/" + coord.y + ".png?token=b07bf2756f1d583e0e950e841c18ab80c73e2dbe"; }, name: "Air Quality", }); map.overlayMapTypes.insertAt(0,waqiMapOverlay);
+    
 
 
   // Create the search box and link it to the UI element.
@@ -121,7 +122,7 @@
 
 }
    </script>
-   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSPOQUbCZxhhe2qsem9DhblpJHHsP2mEM&libraries=places&callback=initAutocomplete"
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvrPIr2130oMzWo71DVWpQMa-4AU3wHIw&libraries=places&callback=initAutocomplete"
          async defer></script>
        </div>
            <div class="slide">
@@ -136,8 +137,8 @@
 	</form>
 
 				 <div id="results">
-				 <p id="results1">
-				 </p>
+				 <p id="results1"></p>
+         <p id="results11"></p>
 				 <p id="results2">
 				 </p>
 				 <p id="results3">
@@ -146,11 +147,15 @@
 				 </p>
 				 <img id="icon">
 			 </div>
+      
+
+  
+
 				 <script>
 //combine weather and AQI APIS
 				 $(document).ready(function() {
 
-												var key1 ="42338634968744c9b2f73904ff407786";
+												var key1 ="d42553890136ea2ed14b45b2732a7d8753253945";
 												var key2="778797873ed164f8b50125ca6bcdf104";
 
 												$("#search").submit(function(event) {
@@ -165,15 +170,19 @@
 														var search_term = $('#searchterm').val();
 
 													 $.ajax({
-																url: "https://api.breezometer.com/baqi/?",
-																data: { location: search_term,
-																				key: key1, },
+																url: "https://api.waqi.info/search/?",
+																data: { token: key1,
+                                        keyword: search_term,
+																				 },
 																success: function(response){
 																		console.log(response);
 
-																		$('#results1').text("Air Quality Index:"+' '+response.breezometer_aqi+' '+response.breezometer_description);
+																		$('#results1').text("Air Quality Index:"+' '+response.data[3].aqi);
+                                    $('#results11').text('Air Quality Index Station:'+' '+response.data[3].station.name);
 
-																	}
+																	} 
+
+                                   
 
 
 														});
@@ -240,7 +249,7 @@ $('#search-button').on("click", function(){
                 $('.error').hide();
 
         });
-var key3="83339fb3-6d16-4ebf-972e-e68db378abf7";
+var key3="60a26f8d-88c4-4297-8ae3-0472c9ed43ba";
 var print_headline = function(headline, url) {
             $('#airnews ul').append('<li><a href="' + url + '" target="_blank">' + headline + '</a></li>');
         }
